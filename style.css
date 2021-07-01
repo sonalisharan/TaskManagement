@@ -6,6 +6,8 @@
 
 body {
         font-family: "Poppins", sans-serif;
-        background-color: lavenderblush;
+        background-image: linear-gradient(
+            to right, #f7659d 0%, #c7f89e 60%, #f870d6 100%
+        );
         
 }

@@ -21,16 +21,16 @@ const newCard = ( {
         </button>
     </div>
     <img 
-        src="https://media.istockphoto.com/photos/child-hands-formig-heart-shape-picture-id951945718?k=6&m=951945718&s=612x612&w=0&h=ih-N7RytxrTfhDyvyTQCA5q5xKoJToKSYgdsJ_mHrv0=" 
+        src=${imageUrl}
         class="card-img-top"
         alt="..."
         />
     <div class="card-body">
-      <h5 class="card-title">Special title treatment</h5>
+      <h5 class="card-title">${taskTitle}</h5>
       <p class="card-text">
-        With supporting text below as a natural lead-in to additional content.
+        ${taskDescription}
       </p>
-      <span class="badge bg-primary">Amazing</span>
+      <span class="badge bg-primary">${taskType}</span>
     </div>
     <div class="card-footer text-muted">
         <button type="button" class="btn btn-outline-primary float-end">
@@ -52,6 +52,5 @@ const saveChanges = () => {
     //parent object html -> DOM -> document
 
     const createNewCard = newCard(taskData);
-
     taskContainer.insertAdjacentHTML("beforeend", createNewCard);
 };
