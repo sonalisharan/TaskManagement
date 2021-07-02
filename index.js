@@ -16,8 +16,8 @@ const newCard = ( {
         <button type="button" id=${id} class="btn btn-outline-success" onclick="editCard.apply(this, arguments)">
             <i class="fas fa-pencil-alt" id=${id} onclick="editCard.apply(this, arguments)"></i>
         </button>
-        <button type="button" class="btn btn-outline-danger">
-            <i class="fas fa-trash"></i>
+        <button type="button" id=${id} class="btn btn-outline-danger" onclick="deleteCard.apply(this, arguments)">
+            <i class="fas fa-trash-alt id=${id} onclick="deleteCard.apply(this, arguments)"></i>
         </button>
     </div>
     <img 
@@ -56,6 +56,9 @@ const loadInitialTaskCards = () => {
     });
 };
 
+const updateLocalStorage = () =>
+    localStorage.setItem("tasky", JSON.stringify({ cards: globalStore }));
+
 const saveChanges = () => {
     const taskData = {
         id: `${Date.now()}`,  //unique number for card id
@@ -73,5 +76,99 @@ const saveChanges = () => {
     globalStore.push(taskData);
 
     // add to local storage
-    localStorage.setItem("tasky", JSON.stringify({ cards: globalStore }));
+    updateLocalStorage();
 };
+
+const deleteCard = (event) => {
+    // id
+        event = window.event;
+        const targetID = event.target.id;
+        const tagname = event.target.tagName; // BUTTON
+
+    // search  the gloablStore, remove the object which matches with the id 
+        globalStore = globalStore.filter(
+            (cardObject) => cardObject.id !== targetID);
+
+    // access DOM to remove them
+            if(tagname === "BUTTON") {
+                //task container
+                return taskContainer.removeChild(
+                event.target.parentNode.parentNode.parentNode
+                );
+         }
+
+         //task container
+         return taskContainer.removeChild(
+            event.target.parentNode.parentNode.parentNode.parentNode    
+            );
+};
+
+
+const editCard = (event) => {
+    event = window.event;
+    const targetID = event.target.id;
+    const tagname = event.target.tagName;
+  
+    let parentElement;
+  
+    if (tagname === "BUTTON") {
+      parentElement = event.target.parentNode.parentNode;
+    } else {
+      parentElement = event.target.parentNode.parentNode.parentNode;
+    }
+  
+    let taskTitle = parentElement.childNodes[5].childNodes[1];
+    let taskDescription = parentElement.childNodes[5].childNodes[3];
+    let taskType = parentElement.childNodes[5].childNodes[5];
+    let submitButton = parentElement.childNodes[7].childNodes[1];
+  
+    taskTitle.setAttribute("contenteditable", "true");
+    taskDescription.setAttribute("contenteditable", "true");
+    taskType.setAttribute("contenteditable", "true");
+    submitButton.setAttribute(
+      "onclick",
+      "saveEditchanges.apply(this, arguments)"
+    );
+    submitButton.innerHTML = "Save Changes";
+  };
+  
+  const saveEditchanges = (event) => {
+    event = window.event;
+    const targetID = event.target.id;
+    console.log(targetID);
+    const tagname = event.target.tagName;
+  
+    let parentElement;
+  
+    if (tagname === "BUTTON") {
+      parentElement = event.target.parentNode.parentNode;
+    } else {
+      parentElement = event.target.parentNode.parentNode.parentNode;
+    }
+  
+    let taskTitle = parentElement.childNodes[5].childNodes[1];
+    let taskDescription = parentElement.childNodes[5].childNodes[3];
+    let taskType = parentElement.childNodes[5].childNodes[5];
+    let submitButton = parentElement.childNodes[7].childNodes[1];
+  
+    const updatedData = {
+      taskTitle: taskTitle.innerHTML,
+      taskType: taskType.innerHTML,
+      taskDescription: taskDescription.innerHTML,
+    };
+  
+    globalStore = globalStore.map((task) => {
+      if (task.id === targetID) {
+        return {
+          id: task.id,
+          imageUrl: task.imageUrl,
+          taskTitle: updatedData.taskTitle,
+          taskType: updatedData.taskType,
+          taskDescription: updatedData.taskDescription,
+        };
+      }
+      return task; // Important
+    });
+  
+    updateLocalStorage();
+  };
